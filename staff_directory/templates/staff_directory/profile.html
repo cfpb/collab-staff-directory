@@ -1,0 +1,178 @@
+{% extends "staff_directory/base.html" %}
+
+{% block "section_id" %}directory individual{% endblock %}
+
+{% block "content" %}
+
+<div id="content" class="profile">
+  <header>
+    <hgroup>
+      <h1>{{ person.full_name }}</h1>
+      <h2>{{ person.title }}</h2>
+    </hgroup>
+    {% if person.photo_file %}
+      <img src="{{ person.photo_file.url_200x200 }}" alt="{{ person.user.first_name }} {{ person.user.last_name }}" width="200" />
+    {% endif %}
+    <ul class="profile-info1">
+      {% if person.user.id == user.id %}
+        <a href="{% url "core:account" %}" title="Edit Profile">Edit Profile</a>
+      {% endif %}
+    </ul>
+  </header>
+
+  <div class="list">
+      <ul>
+          <li class="info_email">
+            <span>Email</span>
+            <a href="mailto:{{ person.user.email }}">{{ person.user.email }}</a>
+          </li>
+          <li class="info_phone">
+            <span>Phone</span>
+            {% if person.office_phone_formatted %}
+                {{ person.office_phone_formatted }}
+            {% else %}
+                Unlisted
+            {% endif %}
+          </li>
+          <li class="info_mobile">
+            <span>Mobile</span>
+            {% if person.mobile_phone_formatted %}
+                {{ person.mobile_phone_formatted }}
+            {% else %}
+            Unlisted
+            {% endif %}
+          </li>
+      </ul>
+      <ul>
+        {% if person.org_group.parent %}
+          <li>
+            <span>Division</span>
+            <a href="{% url "staff_directory:org_group" title=person.org_group.parent %}">{{ person.org_group.parent }}</a>
+          </li>
+          <li>
+            <span>Office</span>
+            <a href="{% url "staff_directory:org_group" title=person.org_group %}">{{ person.org_group }}</a>
+          </li>
+        {% else %}
+          <li>
+            <span>Division</span>
+            <a href="{% url "staff_directory:org_group" title=person.org_group %}">{{ person.org_group }}</a>
+          </li>
+          <li>
+            <span>Office</span>
+            {% ifequal user person.user %}
+              <a href="{% url "core:account" %}">Add yourself to an office</a>
+            {% endifequal %}
+          </li>
+        {% endif %}
+        <li>
+            <span>Building</span>
+            {{ person.office_location }}
+        </li>
+        <li>
+            <span>Room</span>
+            {{ person.desk_location }}
+        </li>
+      </ul>
+  </div>
+
+  <hr>
+
+    <div class="row">
+        <div class="span8">
+            <div id="msg-bar-error"></div>
+            <h3{% if not person.what_i_do and not what_i_do_tags %} class="empty"{% endif %}>My expertise</h3>
+            <p{% if not person.what_i_do %} class="empty"{% endif %}>
+                {% if person.user == user and not person.what_i_do %}
+                    You haven't completed your profile.
+                {% endif %}
+                {{ person.what_i_do|linebreaks|urlize }}
+            </p>
+
+            {% include "staff_directory/profile_tags.html" with tags=what_i_do_tags person=person tag_label="Work" tag_type="staff-directory-my-expertise" %}
+
+            <h3{% if not person.current_projects and not current_projects_tags %} class="empty"{% endif %}>My projects</h3>
+            <p{% if not person.current_projects %} class="empty"{% endif %}>
+                {% if person.user == user and not person.current_projects %}
+                    You haven't completed your profile.
+                {% endif %}
+                {{ person.current_projects|linebreaks|urlize }}
+            </p>
+
+            {% include "staff_directory/profile_tags.html" with tags=current_projects_tags person=person tag_label="Project" tag_type="staff-directory-my-projects" %}
+
+            <h3{% if not person.things_im_good_at and not other_tags %} class="empty"{% endif %}>Other things about me</h3>
+            <p{% if not person.things_im_good_at %} class="empty"{% endif %}>
+                {% if person.user == user and not person.things_im_good_at %}
+                    You haven't completed your profile.
+                {% endif %}
+                {{ person.things_im_good_at|linebreaks|urlize }}
+            </p>
+
+            {% include "staff_directory/profile_tags.html" with tags=other_tags person=person tag_label="" tag_type="staff-directory-other-things" %}
+        </div><!-- /span8 -->
+        <div class="span4" id="staff_thanks">
+            <h4>Staff thanks</h4>
+            {% if not user == person.user %}
+                <a href="#" class="right" id="add_staff_thanks">+ Add</a>
+
+                <div class="add_thanks" style="display: none;" id="add_thanks">
+                    <form method="post" action="{% url "staff_directory:thanks" person.stub %}" id="thanks_form">
+                        {% csrf_token %}
+                        <label>Add staff thanks for
+                            <select name="value_type">
+                                <option value="serve">Service</option>
+                                <option value="lead">Leadership</option>
+                                <option value="innovate">Innovation</option>
+                            </select>
+                        </label>
+                        <hr>
+                        <label>What would you like to thank {{ person.user.first_name }} for?</label>
+                        <textarea rows="8" name="reason"></textarea>
+                        <input type="submit" value="Send Thanks" class="btn">
+                    </form>
+                </div>
+            {% endif %}
+            <hr style="clear: both;"></hr>
+
+            {% for t in thanks %}
+                <h5>{{ t.cfpb_value|capfirst }}</h5>
+                <p><i class="icon-quote-left"></i> {{ t.reason }} <i class="icon-quote-right"></i></p>
+                <h5 class="meta">
+                    Submitted by 
+                    {% if t.praise_nominator.is_active %}
+                    <a href="{% url "staff_directory:person" t.praise_nominator.person.stub %}">
+                        {{ t.praise_nominator.first_name }} {{ t.praise_nominator.last_name }}
+                    </a> 
+                    {% else %}
+                        {{ t.praise_nominator.first_name }} {{ t.praise_nominator.last_name }}
+                    {% endif %}
+                    on {{ t.date_added|date:"M d, Y" }}
+                </h5>
+                <hr/>
+            {% endfor %}
+
+            <a href="{% url "staff_directory:show_thanks" %}">View staff thanks for everyone</a>
+        </div><!-- /span4 -->
+    </div><!-- /row -->
+
+</div><!-- /content -->
+{% endblock %}
+
+{% block "js_ready" %}
+    {% include "staff_directory/tag_submissions.js" %}
+    $(".tags_autocomplete").autocomplete({
+        source: "{% url "search:tags_json" %}",
+    });
+    var thanks_link  = $("#add_staff_thanks");
+    thanks_link.click(function(e) {
+        e.preventDefault();
+        if(thanks_link.html() == "+ Add") {
+            thanks_link.html("Cancel");
+            $("#add_thanks").slideDown();
+        } else {
+            thanks_link.html("+ Add");
+            $("#add_thanks").slideUp();
+        }
+    });
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "staff_directory/base.html" %}
+
+{% block "title" %}Staff thanks for colleagues{% endblock %}
+
+{% block "page_js" %}
+    <script type="text/javascript" src="/static/ps/js/ps.js"></script>
+{% endblock %}
+
+{% block "content" %}
+<div id="content" class="staffthanks">
+    <h2>Staff thanks for colleagues</h2>
+
+    {% for p in thanks_list %}
+        <div class="praise_block">
+            <h3>
+                {% if p.cfpb_value|lower == 'serve' %}
+                    Service
+                {% elif p.cfpb_value|lower == 'lead' %}
+                    Leadership
+                {% elif p.cfpb_value|lower == 'innovate' %}
+                    Innovation
+                {% endif %}
+                staff thanks for 
+                <a href="{% url "staff_directory:person" p.recipient.stub %}">
+                    {{ p.recipient.user.first_name }} {{ p.recipient.user.last_name }}
+                </a>
+            </h3>
+
+            <p class="praise_reason">
+                <i class="icon-quote-left"></i> {{ p.reason }} <i class="icon-quote-right"></i>
+            </p>
+
+            <div class="praise_footer">
+                Added by 
+                {% if p.praise_nominator.is_active %}
+                    <a href="{% url "staff_directory:person" p.praise_nominator.person.stub %}">{{ p.praise_nominator.first_name }} {{ p.praise_nominator.last_name }}</a>
+                {% else %}
+                    {{ p.praise_nominator.first_name }} {{ p.praise_nominator.last_name }}
+                {% endif %}
+                on {{ p.date_added }}
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,5 @@
+include AUTHORS
+include LICENSE
+include README.md
+recursive-include staff_directory/static *
+recursive-include staff_directory/templates *

@@ -1,0 +1,11 @@
+{% extends "notifications/email/base_notification.html" %}
+
+{% block "body" %}
+<p>Hello {{ n.target.first_name }}!</p>
+
+<p>We're writing to let you know that <a href="{{ project_url }}{% url "staff_directory:person" n.actor.get_profile.stub %}">{{ n.actor.first_name }} {{ n.actor.last_name }}</a> removed the "{{ n.obj }}" tag from your profile in the staff directory.</p>
+
+<p>You can view and manage your staff directory tags on <a href="{{ project_url }}{% url "staff_directory:person" n.target.get_profile.stub %}">your profile page</a></p>
+
+<p>Thanks.</p>
+{% endblock %}

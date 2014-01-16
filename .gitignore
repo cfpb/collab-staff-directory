@@ -1,0 +1,6 @@
+*.pyc
+collab-less
+.DS_Store
+dist
+collab_staff_directory.egg-info
+build

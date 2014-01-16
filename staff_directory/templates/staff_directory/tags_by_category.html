@@ -1,0 +1,41 @@
+{% load lookup %}
+<h2>Tags</h2>
+
+<form id="tags-form" method="POST" action="{% url "staff_directory:show_by_tag" %}">
+    {% csrf_token %}
+    {% for category, c_tags in tags.items %}
+        {% if c_tags %}
+            <h4>
+                {{ tag_category_names|lookup:category }}
+            </h4>
+            <ul style="padding-left: 0px;">
+            {% for tag in c_tags %}
+                {% if selected_tags %}
+                    <li class="tag">
+                        {% if tag.slug in selected_tags %}
+                            <a href="." class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                        {% else %}
+                            {% if org_group %}
+                                <a href="{% url "staff_directory:org_group_with_tags" title=org_group.title tag_slugs=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                            {% else %}
+                                <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                            {% endif %}
+                        {% endif %}
+                        <span class="tag_remove">{{ tag.tag_count }}</span>
+                    </li>
+                {% else %}
+                    <li class="tag">
+                        {% if org_group %}
+                            <a href="{% url "staff_directory:org_group_with_tags" title=org_group.title tag_slugs=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                        {% else %}
+                            <a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                        {% endif %}
+                        <span class="tag_remove">{{ tag.tag_count }}</span>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endfor %}
+    <input type="hidden" value="{{ selected_tags }}" name="tag_slugs" id="tag_slugs"></input>
+</form>

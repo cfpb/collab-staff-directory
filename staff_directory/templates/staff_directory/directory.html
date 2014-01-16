@@ -1,0 +1,50 @@
+{% extends "staff_directory/base.html" %}
+
+{% block "content" %}
+
+{% load cache %}
+
+<div id="content" class="group">
+
+    <div class="row">
+        <div class="span8 right">
+            <h2>Recently updated</h2>
+            <div class="profile_images">
+                {% cache 600 staff_dir_random_photos %}
+                    {% for photo in random_photos %}
+                        <a href="{% url "staff_directory:person" stub=photo.user.person.stub %}">
+                            <img class="tiny_photo" src="{{ photo.photo_file.url_125x125 }}" alt="">
+                            {{ photo.user.first_name }} {{ photo.user.last_name }}
+                        </a>
+                    {% endfor %}
+                {% endcache %}
+            </div>
+            <hr style="margin-right: 50px;"/>
+            <h2>Explore by tag</h2>
+            <ul>
+                {% cache 600 staff_dir_tags %}
+                    {% for tag in tags %}
+                        <li class="tag"><a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name">{{ tag.name }}</a><span class="tag_remove">{{ tag.tag_count }}</span></li>
+                    {% endfor %}
+                {% endcache %}
+            </ul>
+        </div>
+        <div class="explore span4 right">
+            <h2>Explore by office</h2>
+            {% cache 600 staff_dir_divisions %}
+                {% regroup offices by parent as divisions %}
+                {% for division in divisions %}
+                    <h3><a href="{% url "staff_directory:org_group" title=division.grouper %}">{{ division.grouper }}</a></h3>
+                    <ul>
+                        {% for o in division.list %}
+                            <li><a href="{% url "staff_directory:org_group" title=o.title %}">{{ o.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            {% endcache %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block "title" %}
+    {% if title %}
+        {{ title }}
+    {% else %}
+        Staff Directory
+    {% endif %}
+{% endblock %}
+
+{% block "section_id" %}directory{% endblock %}
+
+{% block "print_header" %}<h2 class="print_header">CFPB Staff Directory</h2>{% endblock %}
+
+{% block "js_head_scripts" %}
+    <link rel="stylesheet" href="{{ STATIC_URL}}/css/staff_directory.min.css">
+{% endblock %}
+
+{% block "js_scripts" %}
+    <script type="text/javascript">
+        window.at_model = 'person,tag';
+    </script>
+{% endblock %}

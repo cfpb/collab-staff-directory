@@ -1,0 +1,9 @@
+{% extends "notifications/email/base_notification.html" %}
+
+{% block "body" %}
+<p>Hello {{ n.target.first_name }}!</p>
+
+<p>We're writing to let you know that {{ n.actor.first_name }} {{ n.actor.last_name }} <a href="{{ project_url }}{% url "staff_directory:person" n.target.get_profile.stub %}">thanked</a> you on the Staff Directory!</a>
+
+<p>Thanks.</p>
+{% endblock %}

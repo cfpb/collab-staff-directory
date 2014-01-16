@@ -1,0 +1,25 @@
+<h2>Tags</h2>
+
+<form id="tags-form" method="POST" action="{% url "staff_directory:show_by_tag" %}">
+    {% csrf_token %}
+    <ul style="padding-left: 0px;">
+        {% for tag in tags %}
+            {% if selected_tags %}
+                <li class="tag">
+                    {% if tag.slug == selected_tags %}
+                        <a href="{% url "staff_directory:remove_tag_from_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    {% else %}
+                        <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    {% endif %}
+                    <span class="tag_remove">{{ tag.tag_count }}</span>
+                </li>
+            {% else %}
+                <li class="tag">
+                <a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name" data-toggle="button" id="{{ tag.slug }}">{{ tag.name }}</a>
+                <span class="tag_remove">{{ tag.tag_count }}</span>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <input type="hidden" value="{{ selected_tags }}" name="tag_slugs" id="tag_slugs"></input>
+</form>

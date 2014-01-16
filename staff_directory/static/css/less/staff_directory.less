@@ -1,0 +1,244 @@
+@import 'collab-less/variables.less';
+// Requires setting up `collab-less` symlink in the aup/static/css/less folder.
+// ln -s ~/[path/to/collab]/theme/less ~/[path/to/staff-directory]/staff_directory/static/css/less/collab-less
+
+/*
+ * Staff Directory
+ */
+
+.directory {
+// Scoping with section_id class on the body element. Ignore for indentation purposes.
+
+
+.group h1 {
+    margin-bottom: 0.5em;
+    line-height: 1.25;
+}
+.group h2 {
+    margin: 1em 0;
+}
+.explore {
+    h3 {
+        font: 600 1em/1.5 @demi;
+        border-bottom-width: 1px;
+    }
+    ul {
+        padding: 0;
+        margin: 0 0 1em;
+        list-style: none;
+    }
+    li a {
+        text-decoration: none;
+        font-family: "Avenir Next", Arial, sans-serif;
+        border-bottom-width: 0;
+    }
+}
+.directory ul {
+    padding: 0;
+    list-style: none;
+}
+.directory #tooltip {
+    max-width: 400px;
+}
+
+.profile_images {
+    a {
+        display: inline-block;
+        width: 125px;
+        margin: 0 5px 10px 0;
+        color: @black;
+        font-family: "Avenir Next", Arial, sans-serif;
+        font-size: 1em;
+        line-height: 1.25;
+        text-decoration: none;
+        vertical-align: top;
+
+        img {
+            display: block;
+            width: 125px;
+            margin-bottom: 5px;
+        }
+
+        &:hover {
+            color: @pacific;
+        }
+    }
+}
+
+#tags-form h4 {
+    margin: 1em 0 0.5em;
+}
+
+.group_actions h3 {
+    margin-top: 1em;
+}
+
+
+// Profile
+
+.profile {
+    p {max-width: 40em;}
+    > header {
+    
+    //@media screen and (min-width: 920px) {
+        // overflow:hidden;
+        // margin-bottom: -7em;
+
+        ul {
+            text-align: right;
+            float:right;
+        }
+    //}
+
+        hgroup {
+            float: left;
+            margin-bottom: 1em;
+        }
+
+        h2 {
+            font-size: 1.375em;
+            line-height: 1.27272727272727;
+            font-family: "Avenir Next", Arial, sans-serif;
+            margin-top: -0.25em;
+        }
+        img {
+            margin-top: 1em;
+        }
+    //@media screen and (min-width: 640px) {
+        img {
+            margin-top: 0;
+            float:right;
+        }
+    //}
+        li {
+            text-align:right;
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 0 0.25em;
+            font-family: "Avenir Next", Arial, sans-serif;
+
+            span {
+                font: 0/0 a;
+                color: transparent;
+                width: 25px;
+                height: 25px;
+                display: inline-block;
+                vertical-align: top;
+            }
+        }
+        ul {
+            margin-right: 1.9%;
+            padding:0;
+            width: 18em;
+        }
+        > img {
+            width: 200px;
+            height: 200px;
+            border: 5px solid #EEE;
+            background: #DDD;
+        }
+    }
+    > div.list {
+        border-bottom: 1px solid #CCC;
+        border-top: 1px solid #CCC;
+        font-family: "Avenir Next", Arial, sans-serif;
+        padding: 1em 0 1em 0;
+        clear: left;
+        margin: 1em 240px 2em 0;
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 2em 0 0;
+            display: inline-block;
+            vertical-align: top;
+
+            p {margin-bottom: 0.375em}
+            span {
+                font-family: "Avenir Next Demi", Arial, sans-serif;
+                display: inline-block;
+                text-align: left;
+                width: 70px;
+                margin-right: 0.5em;
+            }
+        }
+    } // div.list
+    > hr {
+        display: none;
+    }
+} // .profile
+
+    
+// Staff Thanks
+
+#staff_thanks {
+    margin-top: 0.4em;
+
+    h4 {
+        float: left;
+
+        a {
+            text-decoration: none;
+        }
+    }
+
+    h5 {
+        font: bold 1em/1.5 "Avenir Next Bold", Arial, sans-serif;
+        margin: 0.5em 0;
+    }
+
+    .meta {
+        font: normal 0.8em/1.5 "Avenir Next", Arial, sans-serif;
+    }
+} // #staff_thanks
+
+#staff_thanks,
+.staffthanks {
+    // Includes list of all staff thanks
+    p {
+        margin-left: 24px;
+        text-indent: -24px;
+    }
+
+    p > [class^="icon-quote-left"] {
+        margin-right: 4px;
+        text-indent: 0;
+    }
+
+    p > [class^="icon-quote-right"] {
+        margin-left: 4px;
+        text-indent: 0;
+    }
+}
+
+.staffthanks > h2 {
+    margin-bottom: 1em;
+}
+
+.add_thanks {
+    display: block;
+    padding: 0.5em;
+    background: #ECEBE8;
+    position: relative;
+    margin: 2.5em 0 1em;
+
+    &:before {
+        position: absolute;
+        top: -20px;
+        right: 7px;
+        content: "";
+        border-color: transparent transparent #ECEBE8 transparent;
+        border-style: solid;
+        border-width: 10px;
+        width: 0;
+        height: 0;
+    }
+
+    textarea {
+        width:100%;
+        margin-bottom: 0.5em;
+        box-sizing: border-box;}
+} // .add_thanks
+
+
+} // .directory scoping

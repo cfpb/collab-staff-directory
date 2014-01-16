@@ -1,0 +1,81 @@
+{% extends "staff_directory/base.html" %}
+
+{% block "content" %}
+
+{% load get_group_key %}
+{% load cache %}
+
+{% get_group_key tags as tags_key %}
+
+<div id="content" class="group">
+
+<div class="row">
+
+    <div class="span9 right">
+            <h2>{{ title }}</h2>
+            
+            {% cache 600 display_group_profiles tags_key title %}
+                <div class="profile_images">
+                {% for person in people %}
+                    <a href="{% url "staff_directory:person" stub=person.user.person.stub %}">
+                        <img src="{{ person.photo_file.url_125x125 }}" alt="">
+                        {{ person.user.first_name }} {{ person.user.last_name }}
+                    </a>
+                {% endfor %}
+                </div> <!-- /.profile_images -->
+            {% endcache %}
+
+            <div class="group_actions">
+                {% if single_tag %}
+                <form method="post" action="{% url "staff_directory:add_person_to_tag" single_tag.name %}" id="submit_form">
+                    {% csrf_token %}
+                    <h3>Add Person</h3>
+                    Think someone belongs here? Type their name in the box below to add them.
+                    <div id="msg-bar-error"></div>
+                    <div>
+                        <input type="text" name="person_name" id="person_name" class="person_autocomplete"></input>
+                    </div>
+                    <div>
+                        Add to their
+                        <select name="tag_category" id="tag_category">
+                          <option value="staff-directory-my-expertise">Expertise</option>
+                          <option value="staff-directory-my-projects">Projects</option>
+                          <option value="staff-directory-other-things">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="button" class="btn" value="Tag with '{{ single_tag.name }}'" id="submit_btn"></input>
+                        <input type="hidden" name="person_stub" id="person_stub"></input>
+                    </div>
+                </form>
+                {% endif %}
+
+                {% if selected_tags %}
+                <h3>Get emails</h3>
+                Get a list of emails for everyone who shares this tag.
+                <br />
+                <a href="{% url "staff_directory:show_tag_emails" selected_tags %}" class="btn" target="_blank">Export emails</a>
+                {% endif %}
+            </div> <!-- /.group_actions -->
+    </div> <!-- /.span9 -->
+
+    {% cache 600 display_group_tags_pane tags_key title %}
+        {% if tags and tag_category_names %}
+        <div class="span3 right">
+            {% include "staff_directory/tags_by_category.html" %}
+        </div> <!-- /.span3 -->
+        {% elif tags %}
+        <div class="span3 right">
+            {% include "staff_directory/tags.html" %}
+        </div> <!-- /.span3 -->
+        {% endif %}
+    {% endcache %}
+
+</div> <!-- /.row -->
+
+</div>
+{% endblock %}
+
+{% block "js_ready" %}
+    {% include "staff_directory/display_group.js" %}
+{% endblock %}

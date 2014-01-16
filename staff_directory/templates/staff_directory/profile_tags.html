@@ -1,0 +1,26 @@
+<div class="tags">
+    {% for tag in tags %}
+        <div class="tag" title="Tagged by {{ tag.taggers }}">
+            <a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name">{{ tag.name }}</a>
+            {% if tag.can_remove %}
+                <a href="{% url "staff_directory:remove_tag" person.stub tag.slug tag_type %}" class="tag_remove">x</a>
+            {% endif %}
+        </div>
+    {% endfor %}
+    {% if person.allow_tagging or person.user == user %}
+    <form method="POST" action="{% url "staff_directory:add_tag" person.stub %}">
+        {% csrf_token %}
+        <div>
+            <label for="tag">Add a {{ tag_label }} Tag for {% if person.user == user %}yourself{% else %}{{ person.user.first_name }}{% endif %}</label>
+            <input type="text" maxlength=75 name="tag" class="tags_autocomplete" id="work_tag_input_text"></input>
+            <input type="submit" value="Add" class="btn" id="work_tag_submit_btn"></input>
+            <input type="hidden" value="{{ person.stub }}" name="person_stub">
+            </input>
+            <input type="hidden" value="{{ tag_type }}" name="tag_category_slug">
+            </input>
+        </div>
+    </form>
+    {% elif tag_type == "staff-directory-other-things" %}
+        <div class="no_tagging">{% if person.user == user %}You have{% else %}{{ person.user.first_name }} {{ person.user.last_name }} has{% endif %} chosen not to allow tagging.</div>
+    {% endif %}
+</div>

@@ -1,0 +1,200 @@
+[
+    {
+        "pk": 51,
+        "model": "core.orggroup",
+        "fields": {
+            "description": null,
+            "parent": null,
+            "title": "Test Organization"
+        }
+    },
+    {
+        "pk": "OF1",
+        "model": "core.officelocation",
+        "fields": {
+            "suite": "",
+            "state": "DC",
+            "street": "1600 Pennsylvania Ave NW",
+            "zip": "20500",
+            "city": "Washington"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "auth.user",
+        "fields": {
+            "username": "test1@example.com",
+            "first_name": "John",
+            "last_name": "Smith",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2012-08-28T14:11:00Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$ggAKkiHobFL8$xQzwPeHNX1vWr9uNmZ/gKbd17uLGZVM8QNcgmaIEAUs=",
+            "email": "test1@example.com",
+            "date_joined": "2012-03-01T16:03:14Z"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "auth.user",
+        "fields": {
+            "username": "admin@example.com",
+            "first_name": "Sara",
+            "last_name": "Smith",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2012-03-01T16:34:27Z",
+            "groups": [],
+            "user_permissions": [],
+            "password": "sha1$055f5$0d02cf644059c99d3b2291acf4912567acb97baf",
+            "email": "admin@example.com",
+            "date_joined": "2012-03-01T16:34:27Z"
+        }
+    },
+
+    {
+        "pk": 1,
+        "model": "core.person",
+        "fields": {
+            "what_i_do": "",
+            "mobile_phone": "",
+            "office_location": "OF1",
+            "desk_location": "",
+            "title": "djangonaut",
+            "schools_i_attended": "",
+            "allow_tagging": true,
+            "photo_file": "avatars/default.jpg",
+            "current_projects": "",
+            "stub": "test1",
+            "office_phone": "5555555555",
+            "stuff_ive_done": "",
+            "user": [
+                "test1@example.com"
+            ],
+            "home_phone": "",
+            "org_group": 51,
+            "things_im_good_at": "",
+            "email_notifications": false,
+            "updated_at": "2012-03-01T11:34:54Z"
+        }
+    },
+
+    {
+        "pk": 2,
+        "model": "core.person",
+        "fields": {
+            "what_i_do": null,
+            "mobile_phone": "",
+            "office_location": "OF1",
+            "desk_location": null,
+            "title": "administrator",
+            "schools_i_attended": null,
+            "allow_tagging": true,
+            "photo_file": "avatars/default.jpg",
+            "current_projects": null,
+            "stub": "admin",
+            "office_phone": "5551115555",
+            "stuff_ive_done": null,
+            "user": [
+                "admin@example.com"
+            ],
+            "home_phone": null,
+            "org_group": 51,
+            "things_im_good_at": null,
+            "email_notifications": false,
+            "updated_at": "2012-03-01T11:34:54Z"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "taggit.tag",
+        "fields": {
+            "name": "Outstanding",
+            "slug": "outstanding"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "taggit.tag",
+        "fields": {
+            "name": "Wonderful",
+            "slug": "wonderful"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "taggit.tagcategory",
+        "fields": {
+            "name": "My Expertise",
+            "slug": "staff-directory-my-expertise"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "taggit.tagcategory",
+        "fields": {
+            "name": "My Projects",
+            "slug": "staff-directory-my-projects"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "taggit.tagcategory",
+        "fields": {
+            "name": "Other Things",
+            "slug": "staff-directory-other-things"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "taggit.taggeditem",
+        "fields": {
+            "tag_creator": null,
+            "tag": 1,
+            "object_id": 1,
+            "content_type": [
+                "core",
+                "person"
+            ],
+            "create_timestamp": "2012-08-28T14:08:53Z",
+            "tag_category": null
+        }
+    },
+    {
+        "pk": 2,
+        "model": "taggit.taggeditem",
+        "fields": {
+            "tag_creator": null,
+            "tag": 2,
+            "object_id": 1,
+            "content_type": [
+                "core",
+                "person"
+            ],
+            "create_timestamp": "2012-08-28T14:08:53Z",
+            "tag_category": null
+        }
+    },
+    {
+        "pk": 3,
+        "model": "taggit.taggeditem",
+        "fields": {
+            "tag_creator": [
+                "test1@example.com"
+            ],
+            "tag": 2,
+            "object_id": 1,
+            "content_type": [
+                "core",
+                "person"
+            ],
+            "create_timestamp": "2012-08-28T14:32:08Z",
+            "tag_category": 1
+        }
+    }
+]
