@@ -21,7 +21,7 @@
             </div>
             <hr style="margin-right: 50px;"/>
             <h2>Explore by tag</h2>
-            <ul>
+            <ul class="tags">
                 {% cache 600 staff_dir_tags %}
                     {% for tag in tags %}
                         <li class="tag"><a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name">{{ tag.name }}</a><span class="tag_remove">{{ tag.tag_count }}</span></li>
