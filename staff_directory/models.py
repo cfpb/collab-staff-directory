@@ -38,11 +38,4 @@ class Praise(models.Model):
             self.praise_nominator, "thanked", self, self.recipient.user,
                 title, url, email_info)
 
-        # Notify nominator
-        title = "You thanked %s for %s" %\
-            (self.recipient.full_name, NOUN[self.cfpb_value])
-        Notification.set_notification(self.praise_nominator,
-            self.praise_nominator, "thanked", self, self.praise_nominator,
-                title, url)
-
         return super(Praise, self).save(*args, **kwargs)
