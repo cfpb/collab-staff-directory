@@ -30,6 +30,7 @@ class Praise(models.Model):
         )
 
         # Notify recipient
+        url = reverse('staff_directory:person', args=(self.recipient.user.person.stub,))
         title ="%s thanked you for %s" %\
             (self.praise_nominator.person.full_name,
                 NOUN[self.cfpb_value])
