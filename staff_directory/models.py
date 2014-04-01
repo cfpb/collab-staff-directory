@@ -30,18 +30,12 @@ class Praise(models.Model):
         )
 
         # Notify recipient
+        url = reverse('staff_directory:person', args=(self.recipient.user.person.stub,))
         title ="%s thanked you for %s" %\
             (self.praise_nominator.person.full_name,
                 NOUN[self.cfpb_value])
         Notification.set_notification(self.praise_nominator,
             self.praise_nominator, "thanked", self, self.recipient.user,
                 title, url, email_info)
-
-        # Notify nominator
-        title = "You thanked %s for %s" %\
-            (self.recipient.full_name, NOUN[self.cfpb_value])
-        Notification.set_notification(self.praise_nominator,
-            self.praise_nominator, "thanked", self, self.praise_nominator,
-                title, url)
 
         return super(Praise, self).save(*args, **kwargs)
