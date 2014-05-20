@@ -1,5 +1,7 @@
 #Staff Directory
 
+[![Build Status](https://travis-ci.org/cfpb/collab-staff-directory.svg?branch=master)](https://travis-ci.org/cfpb/collab-staff-directory)
+
 *Staff Directory* is a [Collab](https://github.com/cfpb/collab) application to show all profiles from the application's active users.
 
 
