@@ -347,7 +347,7 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
             STAFF_DIR_TAG_CATEGORIES).annotate(
                 tag_count=Count('taggit_taggeditem_items'),
             ). \
-            order_by('-tag_count', 'name')
+            order_by('-tag_count', 'name')[:30]
 
         title_tags = ','.join(t.name for t in selected_tags)
 

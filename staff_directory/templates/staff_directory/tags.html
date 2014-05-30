@@ -8,6 +8,8 @@
                 <li class="tag">
                     {% if tag.slug == selected_tags %}
                         <a href="{% url "staff_directory:remove_tag_from_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    {% elif tag.slug in selected_tags %}
+                        <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>                         
                     {% else %}
                         <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
                     {% endif %}
