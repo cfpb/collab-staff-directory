@@ -36,7 +36,7 @@ urlpatterns = patterns('staff_directory.views',
                            name='add_tag_to_filter'),
                        url(r'^tags/(?P<tag_slugs>[a-zA-Z0-9/\-_]+)/' +
                            '(?P<new_tag_slug>[a-zA-Z0-9\-/]+)/$', 'show_by_tag',
-                           name='remove_tag_from_filter'),
+                           name='remove_tag_from_filter'),                 
                        url(r'^tagged-with-emails/(?P<tag_slugs>[0-9a-zA-Z/\-_, ]+)/$',
                            'show_tag_emails', name='show_tag_emails'),
                        )

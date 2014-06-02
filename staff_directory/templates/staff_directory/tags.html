@@ -2,13 +2,19 @@
 
 <form id="tags-form" method="POST" action="{% url "staff_directory:show_by_tag" %}">
     {% csrf_token %}
+    <!-- <h3> My awesome debug:</h3>
+    Selected Tags: {{selected_tags}}
+    Tag Slugs List: {{tag_slugs_list}}
+    Selected Tags List: {% for tag in selected_tags_list %}
+        {{tag}},
+    {% endfor %} And the list: {{selected_tags_list}} -->
     <ul style="padding-left: 0px;">
         {% for tag in tags %}
             {% if selected_tags %}
                 <li class="tag">
                     {% if tag.slug == selected_tags %}
                         <a href="{% url "staff_directory:remove_tag_from_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    {% elif tag.slug in selected_tags %}
+                    {% elif tag.slug in selected_tags_list %}
                         <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>                         
                     {% else %}
                         <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
