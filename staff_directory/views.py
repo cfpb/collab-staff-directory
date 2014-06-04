@@ -309,24 +309,13 @@ def show_thanks(req):
 @login_required
 @never_cache
 #define show by tag with 3 parameters, req, tag_slugs, and new_tag_slug
-def show_by_tag(req, tag_slugs='', new_tag_slug='', remove_tag_slug=''):
-    # if a form is being submitted (POST) then do it this way
-    if req.method == 'POST':
-        tag_slugs = req.POST.get('tag_slugs', '')
-        #tag slugs are equal to the tag_slugs parameter submitted with the post request
-        selected_tags = Tag.objects.filter(slug__in=tag_slugs.split('/'))
-        # selected tags variable is equal to the database Tag objects filtered to accept only parameters in the tag_slugs string, split with a /
-        tags_list = ''
-        for t in selected_tags:
-            tags_list += t.slug
-            tags_list += '/'
-            #for each of the items in the selected tags string, append them to the string called "tags_list" and add a slash
-        expire_cache_group('tags')
-        return HttpResponseRedirect(reverse('staff_directory:show_by_tag',
-                                            args=[tags_list]))
-        # send the URL with the tags_list string as arguments.
+def show_by_tag(req, tag_slugs='', new_tag_slug=''):
+
     if req.method == 'GET':
         p = _create_params(req)
+        print "Tag Slugs: "
+        print tag_slugs
+
         tag_slugs_list = [t for t in tag_slugs.split('/')]
 
         if len(tag_slugs_list) == 0:
@@ -356,7 +345,7 @@ def show_by_tag(req, tag_slugs='', new_tag_slug='', remove_tag_slug=''):
             STAFF_DIR_TAG_CATEGORIES).annotate(
                 tag_count=Count('taggit_taggeditem_items'),
             ). \
-            order_by('-tag_count', 'name')[:30]
+            order_by('-tag_count', 'slug')[:30]
 
         title_tags = ','.join(t.name for t in selected_tags)
 
@@ -365,17 +354,14 @@ def show_by_tag(req, tag_slugs='', new_tag_slug='', remove_tag_slug=''):
         for t in selected_tags:
             selected_tags_list.append(t.slug)
 
-        if len(remove_tag_slug) > 0:
-            selected_tags_list.pop(remove_tag_slug)
-
         p['title'] = "Tagged with %s" % title_tags
         p['people'] = people
         p['tags'] = tags
         p['selected_tags'] = tag_slugs
-        
+
         # Pass a list to the page so we can compare whether selected tag already exists
         p['selected_tags_list'] = selected_tags_list
-        
+
         # TODO: should show page that no one is tagged with that tag
         return render_to_response(TEMPLATE_PATH + 'display_group.html', p,
                                   context_instance=RequestContext(req))
