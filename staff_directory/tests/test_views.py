@@ -20,13 +20,20 @@ class TagPageTests(Exam, TestCase):
     def login(self):
         self.assertTrue(self.client.login(username='test1@example.com', password='1'))
 
-    def test_staff_page(self):
+    def test_tag_slugs(self):
         """
-            Tests the home staff directory page appears with no errors.
+            Tests that a tag can be successfully passed to the tags page.
         """
-        selected_tags = "22/25/30"
-        resp = self.client.get(reverse('staff_directory:show_by_tag" tag_slugs=selected_tags'))
-        self.assertContains(resp, 'Tagged with', status_code=200)
+        resp = self.client.get(reverse('staff_directory:show_by_tag', kwargs={'tag_slugs': 'wonderful'} ))
+        self.assertContains(resp, 'Tagged with Wonderful', status_code=200)
+
+    def test_new_tag_slugs(self):
+        """
+            Tests that a tag can be successfully passed to the tags page, and that tags are alphabetized.
+        """
+        resp = self.client.get(reverse('staff_directory:add_tag_to_filter', kwargs={'tag_slugs': 'wonderful', 'new_tag_slug': 'outstanding'} ))
+        self.assertContains(resp, 'Tagged with Outstanding,Wonderful', status_code=200)
+
 
 class SmokeTests(Exam, TestCase):
     fixtures = ['sd-test-fixtures.json', ]
