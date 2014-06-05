@@ -4,6 +4,8 @@
     {% csrf_token %}
     <ul style="padding-left: 0px;">
         <!-- For each tag in the list tags -->
+<!--         <h2>Awesome Debuggery:</h2>
+        <h4>Tags:</h4> {{tags}} -->
         {% for tag in tags %}
         <!-- If selected_tags is true (contains a valid string of tags) -->
             {% if selected_tags %}

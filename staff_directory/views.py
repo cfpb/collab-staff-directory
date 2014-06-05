@@ -345,7 +345,7 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
             STAFF_DIR_TAG_CATEGORIES).annotate(
                 tag_count=Count('taggit_taggeditem_items'),
             ). \
-            order_by('-tag_count', 'slug')[:30]
+            order_by('-tag_count', 'slug')
 
         title_tags = ','.join(t.name for t in selected_tags)
 
@@ -354,9 +354,22 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
         for t in selected_tags:
             selected_tags_list.append(t.slug)
 
+        # this array is to limit returns while also including all selected tags
+        passed_tags = []
+        for t in tags:
+            if t.slug in selected_tags_list:
+                passed_tags.append(t)
+            elif len(passed_tags) < 30:
+                passed_tags.append(t)
+
+        passed_tags.sort(key=lambda x: x.tag_count, reverse=True)
+
+        print "Passed Tags: "
+        print passed_tags
+
         p['title'] = "Tagged with %s" % title_tags
         p['people'] = people
-        p['tags'] = tags
+        p['tags'] = passed_tags
         p['selected_tags'] = tag_slugs
 
         # Pass a list to the page so we can compare whether selected tag already exists
