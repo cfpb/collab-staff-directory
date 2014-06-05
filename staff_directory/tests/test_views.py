@@ -13,6 +13,21 @@ from core.notifications.models import Notification
 from staff_directory.models import Praise
 
 
+class TagPageTests(Exam, TestCase):
+    fixtures = ['sd-test-fixtures.json', ]
+
+    @before
+    def login(self):
+        self.assertTrue(self.client.login(username='test1@example.com', password='1'))
+
+    def test_staff_page(self):
+        """
+            Tests the home staff directory page appears with no errors.
+        """
+        selected_tags = "22/25/30"
+        resp = self.client.get(reverse('staff_directory:show_by_tag" tag_slugs=selected_tags'))
+        self.assertContains(resp, 'Tagged with', status_code=200)
+
 class SmokeTests(Exam, TestCase):
     fixtures = ['sd-test-fixtures.json', ]
 
