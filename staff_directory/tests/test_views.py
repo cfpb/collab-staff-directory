@@ -13,6 +13,28 @@ from core.notifications.models import Notification
 from staff_directory.models import Praise
 
 
+class TagPageTests(Exam, TestCase):
+    fixtures = ['sd-test-fixtures.json', ]
+
+    @before
+    def login(self):
+        self.assertTrue(self.client.login(username='test1@example.com', password='1'))
+
+    def test_tag_slugs(self):
+        """
+            Tests that a tag can be successfully passed to the tags page.
+        """
+        resp = self.client.get(reverse('staff_directory:show_by_tag', kwargs={'tag_slugs': 'wonderful'} ))
+        self.assertContains(resp, 'Tagged with Wonderful', status_code=200)
+
+    def test_new_tag_slugs(self):
+        """
+            Tests that a tag can be successfully passed to the tags page, and that tags are alphabetized.
+        """
+        resp = self.client.get(reverse('staff_directory:show_by_tag', kwargs={'tag_slugs': 'wonderful/outstanding'} ))
+        self.assertContains(resp, 'Tagged with Outstanding,Wonderful', status_code=200)
+
+
 class SmokeTests(Exam, TestCase):
     fixtures = ['sd-test-fixtures.json', ]
 

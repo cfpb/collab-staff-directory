@@ -9,7 +9,7 @@
                 {{ tag_category_names|lookup:category }}
             </h4>
             <ul style="padding-left: 0px;">
-            {% for tag in c_tags %}
+            {% for tag in c_tags|slice:":10"%}
                 {% if selected_tags %}
                     <li class="tag">
                         {% if tag.slug in selected_tags %}

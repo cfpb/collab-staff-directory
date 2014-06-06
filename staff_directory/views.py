@@ -308,32 +308,28 @@ def show_thanks(req):
 
 @login_required
 @never_cache
+#define show by tag with 3 parameters, req, tag_slugs, and new_tag_slug
 def show_by_tag(req, tag_slugs='', new_tag_slug=''):
-    if req.method == 'POST':
-        tag_slugs = req.POST.get('tag_slugs', '')
-        selected_tags = Tag.objects.filter(slug__in=tag_slugs.split('/'))
-        tags_list = ''
-        for t in selected_tags:
-            tags_list += t.slug
-            tags_list += '/'
-        expire_cache_group('tags')
-        return HttpResponseRedirect(reverse('staff_directory:show_by_tag',
-                                            args=[tags_list]))
+
     if req.method == 'GET':
         p = _create_params(req)
+
         tag_slugs_list = [t for t in tag_slugs.split('/')]
 
         if len(tag_slugs_list) == 0:
             return HttpResponseRedirect(reverse('staff_directory:index'))
 
         selected_tags = Tag.objects.filter(slug__in=tag_slugs_list)
+
         if selected_tags.count() == 0:
             return HttpResponseRedirect(reverse('staff_directory:index'))
         # if only a single tag, show 'add tag to person' block
         if selected_tags.count() == 1:
             p['single_tag'] = selected_tags[0]
+
         selected_tag_pks = Tag.objects.filter(
             slug__in=tag_slugs_list).values_list('pk', flat=True)
+
         people = Person.objects.filter(user__is_active=True) \
             .order_by('user__last_name')
 
@@ -347,18 +343,38 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
             STAFF_DIR_TAG_CATEGORIES).annotate(
                 tag_count=Count('taggit_taggeditem_items'),
             ). \
-            order_by('-tag_count', 'name')
+            order_by('-tag_count', 'slug')
 
         title_tags = ','.join(t.name for t in selected_tags)
+
+        # Create a list of selected tags to compare new selections
+        selected_tags_list = []
+        for t in selected_tags:
+            selected_tags_list.append(t.slug)
+
+        selected_tags_list.sort()
+
+        # this array is to limit returns of non-selected tags
+        passed_tags = []
+        for t in tags:
+            if t.slug in selected_tags_list:
+                #do nothing
+                pass
+            elif len(passed_tags) < 30:
+                passed_tags.append(t)
 
         p['title'] = "Tagged with %s" % title_tags
         p['people'] = people
         p['tags'] = tags
         p['selected_tags'] = tag_slugs
+        p['passed_tags'] = passed_tags
+
+        # Pass a list to the page so we can compare whether selected tag already exists
+        p['selected_tags_list'] = selected_tags_list
+
         # TODO: should show page that no one is tagged with that tag
         return render_to_response(TEMPLATE_PATH + 'display_group.html', p,
                                   context_instance=RequestContext(req))
-
 
 @login_required
 def show_tag_emails(req, tag_slugs=''):

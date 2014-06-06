@@ -1,25 +1,39 @@
+{% load remove_tag_filter %}
 <h2>Tags</h2>
 
-<form id="tags-form" method="POST" action="{% url "staff_directory:show_by_tag" %}">
     {% csrf_token %}
     <ul style="padding-left: 0px;">
+        <!-- For each tag in the list tags -->
+
         {% for tag in tags %}
+        <!-- If selected_tags is true (contains a valid string of tags) -->
+
             {% if selected_tags %}
-                <li class="tag">
+                    <!-- If there is only one tag, removing the tag redirects to staff directory index -->
                     {% if tag.slug == selected_tags %}
-                        <a href="{% url "staff_directory:remove_tag_from_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    {% else %}
-                        <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    {% endif %}
+                <li class="tag">
+                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    <a href="{% url "staff_directory:index" %}"><span class="tag_remove">X</span></a>
                     <span class="tag_remove">{{ tag.tag_count }}</span>
                 </li>
-            {% else %}
+                    <!-- If more than one tag is in the view and they exist on the selected list -->
+                    {% elif tag.slug in selected_tags_list %}
+
+                    <!-- Insert it on the page with the "Pushed" class, but do not append a new parameter -->
                 <li class="tag">
-                <a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name" data-toggle="button" id="{{ tag.slug }}">{{ tag.name }}</a>
-                <span class="tag_remove">{{ tag.tag_count }}</span>
+                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags|remove_tag:tag.slug %}"><span class="tag_remove">X</span></a>
+                    <span class="tag_remove">{{ tag.tag_count }}</span>
                 </li>
+                    {% endif %}
+
             {% endif %}
         {% endfor %}
+
+        {% for tag in passed_tags %}
+                <li class="tag">
+                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags|add:"/"|add:tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    <span class="tag_remove">{{ tag.tag_count }}</span>
+                </li>
+        {% endfor %}
     </ul>
-    <input type="hidden" value="{{ selected_tags }}" name="tag_slugs" id="tag_slugs"></input>
-</form>
