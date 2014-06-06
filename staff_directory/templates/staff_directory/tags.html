@@ -22,7 +22,7 @@
                     <!-- Insert it on the page with the "Pushed" class, but do not append a new parameter -->
                 <li class="tag">
                     <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    <a href="{% url "staff_directory:removetag" tag_slugs=selected_tags|remove_tag:tag.slug %}"><span class="tag_remove">X</span></a>
+                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags|remove_tag:tag.slug %}"><span class="tag_remove">X</span></a>
                     <span class="tag_remove">{{ tag.tag_count }}</span>
                 </li>
                     {% endif %}
@@ -32,7 +32,7 @@
 
         {% for tag in passed_tags %}
                 <li class="tag">
-                    <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags|add:"/"|add:tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
                     <span class="tag_remove">{{ tag.tag_count }}</span>
                 </li>
         {% endfor %}

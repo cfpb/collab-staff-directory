@@ -313,8 +313,6 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
 
     if req.method == 'GET':
         p = _create_params(req)
-        print "Tag Slugs: "
-        print tag_slugs
 
         tag_slugs_list = [t for t in tag_slugs.split('/')]
 
@@ -347,11 +345,6 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
             ). \
             order_by('-tag_count', 'slug')
 
-        print "Tags: "
-        print tags
-
-
-
         title_tags = ','.join(t.name for t in selected_tags)
 
         # Create a list of selected tags to compare new selections
@@ -370,13 +363,6 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
             elif len(passed_tags) < 30:
                 passed_tags.append(t)
 
-
-        print "Selected Tags List: "
-        print selected_tags_list
-
-        print "Passed Tags: "
-        print passed_tags
-
         p['title'] = "Tagged with %s" % title_tags
         p['people'] = people
         p['tags'] = tags
@@ -389,7 +375,6 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
         # TODO: should show page that no one is tagged with that tag
         return render_to_response(TEMPLATE_PATH + 'display_group.html', p,
                                   context_instance=RequestContext(req))
-
 
 @login_required
 def show_tag_emails(req, tag_slugs=''):

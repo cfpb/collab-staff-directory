@@ -31,7 +31,7 @@ class TagPageTests(Exam, TestCase):
         """
             Tests that a tag can be successfully passed to the tags page, and that tags are alphabetized.
         """
-        resp = self.client.get(reverse('staff_directory:add_tag_to_filter', kwargs={'tag_slugs': 'wonderful', 'new_tag_slug': 'outstanding'} ))
+        resp = self.client.get(reverse('staff_directory:show_by_tag', kwargs={'tag_slugs': 'wonderful/outstanding'} ))
         self.assertContains(resp, 'Tagged with Outstanding,Wonderful', status_code=200)
 
 
