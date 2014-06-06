@@ -347,6 +347,11 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
             ). \
             order_by('-tag_count', 'slug')
 
+        print "Tags: "
+        print tags
+
+
+
         title_tags = ','.join(t.name for t in selected_tags)
 
         # Create a list of selected tags to compare new selections
@@ -354,23 +359,29 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
         for t in selected_tags:
             selected_tags_list.append(t.slug)
 
-        # this array is to limit returns while also including all selected tags
+        selected_tags_list.sort()
+
+        # this array is to limit returns of non-selected tags
         passed_tags = []
         for t in tags:
             if t.slug in selected_tags_list:
-                passed_tags.append(t)
+                #do nothing
+                pass
             elif len(passed_tags) < 30:
                 passed_tags.append(t)
 
-        passed_tags.sort(key=lambda x: x.tag_count, reverse=True)
+
+        print "Selected Tags List: "
+        print selected_tags_list
 
         print "Passed Tags: "
         print passed_tags
 
         p['title'] = "Tagged with %s" % title_tags
         p['people'] = people
-        p['tags'] = passed_tags
+        p['tags'] = tags
         p['selected_tags'] = tag_slugs
+        p['passed_tags'] = passed_tags
 
         # Pass a list to the page so we can compare whether selected tag already exists
         p['selected_tags_list'] = selected_tags_list

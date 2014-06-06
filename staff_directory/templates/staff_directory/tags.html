@@ -4,39 +4,37 @@
     {% csrf_token %}
     <ul style="padding-left: 0px;">
         <!-- For each tag in the list tags -->
-<!--         <h2>Awesome Debuggery:</h2>
-        <h4>Tags:</h4> {{tags}} -->
+
         {% for tag in tags %}
         <!-- If selected_tags is true (contains a valid string of tags) -->
+
             {% if selected_tags %}
-                <li class="tag">
                     <!-- If there is only one tag, removing the tag redirects to staff directory index -->
                     {% if tag.slug == selected_tags %}
+                <li class="tag">
                     <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
                     <a href="{% url "staff_directory:index" %}"><span class="tag_remove">X</span></a>
-
+                    <span class="tag_remove">{{ tag.tag_count }}</span>
+                </li>
                     <!-- If more than one tag is in the view and they exist on the selected list -->
                     {% elif tag.slug in selected_tags_list %}
 
                     <!-- Insert it on the page with the "Pushed" class, but do not append a new parameter -->
+                <li class="tag">
                     <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
                     <a href="{% url "staff_directory:removetag" tag_slugs=selected_tags|remove_tag:tag.slug %}"><span class="tag_remove">X</span></a>
-
-                    <!-- Otherwise, pass a new_tag_slug value to the page that appends to the URL with the new_tag_slug arg -->
-                    {% else %}
-                        <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    {% endif %}
-                    <!-- Always add a tag count to the end. -->
                     <span class="tag_remove">{{ tag.tag_count }}</span>
                 </li>
+                    {% endif %}
 
-                <!-- If all else fails, then pass the tag slug on its own to the page -->
-            {% else %}
-                <li class="tag">
-                <a href="{% url "staff_directory:show_by_tag" tag.slug %}" class="tag_name" data-toggle="button" id="{{ tag.slug }}">{{ tag.name }}</a>
-                <span class="tag_remove">{{ tag.tag_count }}</span>
-                </li>
             {% endif %}
+        {% endfor %}
+
+        {% for tag in passed_tags %}
+                <li class="tag">
+                    <a href="{% url "staff_directory:add_tag_to_filter" tag_slugs=selected_tags new_tag_slug=tag.slug %}" class="tag_name" id="{{ tag.slug }}">{{ tag.name }}</a>
+                    <span class="tag_remove">{{ tag.tag_count }}</span>
+                </li>
         {% endfor %}
     </ul>
 </form>
