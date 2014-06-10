@@ -13,8 +13,8 @@
                     {% if tag.slug == selected_tags %}
                 <li class="tag">
                     <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    <a href="{% url "staff_directory:index" %}"><span class="tag_remove">X</span></a>
                     <span class="tag_remove">{{ tag.tag_count }}</span>
+                    <a class="tag_remove" href="{% url "staff_directory:index" %}">X</a>
                 </li>
                     <!-- If more than one tag is in the view and they exist on the selected list -->
                     {% elif tag.slug in selected_tags_list %}
@@ -22,8 +22,8 @@
                     <!-- Insert it on the page with the "Pushed" class, but do not append a new parameter -->
                 <li class="tag">
                     <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags %}" class="tag_name pushed" id="{{ tag.slug }}">{{ tag.name }}</a>
-                    <a href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags|remove_tag:tag.slug %}"><span class="tag_remove">X</span></a>
                     <span class="tag_remove">{{ tag.tag_count }}</span>
+                    <a class="tag_remove" href="{% url "staff_directory:show_by_tag" tag_slugs=selected_tags|remove_tag:tag.slug %}">X</a>
                 </li>
                     {% endif %}
 
