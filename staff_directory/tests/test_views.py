@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.html import escape
@@ -92,7 +92,7 @@ class TaggingTests(Exam, TestCase):
         """
         person = Person.objects.all()[1]
 
-        user = User(first_name="Baba", last_name="O'Reilly")
+        user = get_user_model()(first_name="Baba", last_name="O'Reilly")
         user.save()
 
         tag_category = TagCategory(name='Test Category',
