@@ -14,7 +14,7 @@ from staff_directory.models import Praise
 
 
 class TagPageTests(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', 'core-test-fixtures']
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -36,7 +36,7 @@ class TagPageTests(Exam, TestCase):
 
 
 class SmokeTests(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', 'core-test-fixtures']
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -80,7 +80,7 @@ class SmokeTests(Exam, TestCase):
 
 
 class TaggingTests(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', 'core-test-fixtures']
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -107,7 +107,7 @@ class TaggingTests(Exam, TestCase):
 
 
 class OrgGroupTest(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', 'core-test-fixtures']
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):

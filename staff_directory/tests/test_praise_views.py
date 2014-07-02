@@ -14,7 +14,7 @@ class PraiseTest(Exam, TestCase):
         notification without error.
     """
 
-    fixtures = ['sd-test-fixtures.json', 'core-test-fixtures']
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
