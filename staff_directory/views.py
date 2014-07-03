@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q
 from django.http import HttpResponseRedirect, HttpResponse, Http404
@@ -110,7 +110,7 @@ def person_profile(req, stub):
         display user's profile page
     """
 
-    user = get_object_or_404(User, person__stub=stub)
+    user = get_object_or_404(get_user_model(), person__stub=stub)
     p = _create_params(req)
     if user.is_active:
         person = user.get_profile()

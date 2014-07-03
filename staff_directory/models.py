@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from collab.settings import AUTH_USER_MODEL
 from django.core.urlresolvers import reverse
 from django.db import models
 
@@ -14,7 +14,7 @@ NOUN = {
 
 class Praise(models.Model):
     recipient = models.ForeignKey('core.Person', related_name='recepient')
-    praise_nominator = models.ForeignKey(User)
+    praise_nominator = models.ForeignKey(AUTH_USER_MODEL)
     cfpb_value = models.CharField(max_length=100)
     reason = models.TextField()
     date_added = models.DateTimeField(auto_now=True)

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
@@ -15,7 +14,7 @@ class PraiseTest(Exam, TestCase):
         notification without error.
     """
 
-    fixtures = ['sd-test-fixtures.json', ]
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):

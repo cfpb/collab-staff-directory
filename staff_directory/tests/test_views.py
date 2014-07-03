@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.html import escape
@@ -14,7 +14,7 @@ from staff_directory.models import Praise
 
 
 class TagPageTests(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', ]
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -36,7 +36,7 @@ class TagPageTests(Exam, TestCase):
 
 
 class SmokeTests(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', ]
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -80,7 +80,7 @@ class SmokeTests(Exam, TestCase):
 
 
 class TaggingTests(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', ]
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -92,7 +92,7 @@ class TaggingTests(Exam, TestCase):
         """
         person = Person.objects.all()[1]
 
-        user = User(first_name="Baba", last_name="O'Reilly")
+        user = get_user_model()(first_name="Baba", last_name="O'Reilly")
         user.save()
 
         tag_category = TagCategory(name='Test Category',
@@ -107,7 +107,7 @@ class TaggingTests(Exam, TestCase):
 
 
 class OrgGroupTest(Exam, TestCase):
-    fixtures = ['sd-test-fixtures.json', ]
+    fixtures = ['core-test-fixtures']
 
     @before
     def login(self):
@@ -126,7 +126,7 @@ class OrgGroupTest(Exam, TestCase):
         """
             Tests the org group filters by tag.
         """
-        org = OrgGroup.objects.filter(pk=51)[0]
+        org = OrgGroup.objects.filter(pk=69)[0]
         person_tagged = org.person_set.all()[0]
         person_not_tagged = org.person_set.all()[1]
 
