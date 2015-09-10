@@ -10,8 +10,8 @@
         <div class="span8 right">
             <h2>Recently updated</h2>
             <div class="profile_images">
-                {% cache 600 staff_dir_random_photos %}
-                    {% for photo in random_photos %}
+                {% cache 600 staff_dir_recent_photos %}
+                    {% for photo in recent_photos %}
                         <a href="{% url "staff_directory:person" stub=photo.user.person.stub %}">
                             <img class="tiny_photo" src="{{ photo.photo_file.url_125x125 }}" alt="">
                             {{ photo.user.first_name }} {{ photo.user.last_name }}
