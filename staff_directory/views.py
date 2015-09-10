@@ -88,9 +88,9 @@ def index(req, format='html'):
     if not user_has_profile(req.user):
         return HttpResponseRedirect(reverse('core:register'))
     p = _create_params(req)
-    p['random_photos'] = Person.objects.filter(
+    p['recent_photos'] = Person.objects.filter(
         ~Q(photo_file="avatars/default.jpg")).filter(user__is_active=True). \
-        order_by('-user__date_joined')[:20]
+        order_by('-updated_at')[:20]
     p['divisions'] = OrgGroup.objects.filter(parent=None).order_by('title')
     p['offices'] = OrgGroup.objects.exclude(parent=None).order_by(
         'parent__title', 'title')
