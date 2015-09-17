@@ -315,7 +315,19 @@ def show_thanks(req):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
 
+    total_pages = page.paginator.num_pages
+    mypage = page.number
+    bottom_limit = 15
+    # center range around the current page count
+    if mypage <= bottom_limit/2:
+        flex_range = range(1, min(bottom_limit, total_pages)+1)
+    elif mypage > (total_pages - bottom_limit/2):
+        flex_range = range(total_pages-bottom_limit, total_pages+1)
+    else:
+        flex_range = range(mypage - bottom_limit/2, mypage + bottom_limit/2 + 1)
+
     p['thanks_list'] = page
+    p['flex_page_range'] = flex_range
     return render_to_response('staff_directory/show_thanks.html', p,
                               context_instance=RequestContext(req))
 

@@ -47,7 +47,7 @@
             {% if thanks_list.has_previous %}
                 <li><a href="?page_num={{ thanks_list.previous_page_number }}"><i class="icon-chevron-left"></i></a></li>
             {% endif %}
-            {% for page in thanks_list.paginator.page_range %}
+            {% for page in flex_page_range %}
                 <li class="{% if page == thanks_list.number %}active{% endif %}">
                     <a href="?page_num={{ page }}">{{ page }}</a>
                 </li>
