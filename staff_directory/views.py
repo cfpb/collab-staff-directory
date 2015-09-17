@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.context_processors import csrf
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.views.decorators.cache import cache_page
@@ -301,9 +302,20 @@ def thanks(req, stub):
 @login_required
 def show_thanks(req):
     p = _create_params(req)
-    p['thanks_list'] = Praise.objects.all().order_by('-date_added') \
+    thanks_list = Praise.objects.all().order_by('-date_added') \
         .select_related('praise_nominator', 'recipient',
                         'praise_nominator__person', 'recipient__user')
+    paginator = Paginator(thanks_list, 10)
+    page_num = req.GET.get('page_num')
+
+    try:
+        page = paginator.page(page_num)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    p['thanks_list'] = page
     return render_to_response('staff_directory/show_thanks.html', p,
                               context_instance=RequestContext(req))
 
