@@ -301,7 +301,9 @@ def thanks(req, stub):
 @login_required
 def show_thanks(req):
     p = _create_params(req)
-    p['thanks_list'] = Praise.objects.all().order_by('-date_added')
+    p['thanks_list'] = Praise.objects.all().order_by('-date_added') \
+        .select_related('praise_nominator', 'recipient',
+                        'praise_nominator__person', 'recipient__user')
     return render_to_response('staff_directory/show_thanks.html', p,
                               context_instance=RequestContext(req))
 
