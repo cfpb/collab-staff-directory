@@ -8,7 +8,7 @@
 		<h2>{{ title }}</h2>
 		<div class="profile_images">
       {% for person in people %}
-        <a href="{% url "staff_directory:person" stub=person.user.person.stub %}"><span>{{ person.user.first_name }} {{ person.user.last_name }}</span><img src="{{ person.photo_file.url_125x125 }}" alt="{{ person.user.first_name }} {{ person.user.last_name }}"></a>
+        <a href="{% url "staff_directory:person" stub=person.stub %}"><span>{{ person.user.first_name }} {{ person.user.last_name }}</span><img src="{{ person.photo_file.url_125x125 }}" alt="{{ person.user.first_name }} {{ person.user.last_name }}"></a>
       {% endfor %}
 		</div>
 	</div>

@@ -50,7 +50,9 @@ def _add_person_data(req, p, person):
         _query_profile_current_projects_tags(req, person)
     p['other_tags'] = _query_profile_other_tags(req, person)
     p['thanks'] = Praise.objects.filter(recipient=person). \
-        order_by('-date_added')
+        order_by('-date_added'). \
+        select_related('praise_nominator',
+                       'praise_nominator__person')
 
 
 def _query_profile_what_i_do_tags(req, person):
@@ -91,6 +93,7 @@ def index(req, format='html'):
     p = _create_params(req)
     p['recent_photos'] = Person.objects.filter(
         ~Q(photo_file="avatars/default.jpg")).filter(user__is_active=True). \
+        select_related('user', 'user__person'). \
         order_by('-updated_at')[:20]
     p['divisions'] = OrgGroup.objects.filter(parent=None).order_by('title')
     p['offices'] = OrgGroup.objects.exclude(parent=None).order_by(
@@ -254,6 +257,8 @@ def org_group(req, title, tag_slugs=''):
         people = org_group.person_set.filter(user__is_active=True). \
             order_by('user__last_name', 'user__first_name')
 
+    people = people.select_related('user')
+
     if tag_slugs != '':
         tag_slugs_list = [t for t in tag_slugs.split('/')]
         selected_tags = Tag.objects.filter(slug__in=tag_slugs_list)
@@ -302,9 +307,9 @@ def thanks(req, stub):
 @login_required
 def show_thanks(req):
     p = _create_params(req)
-    thanks_list = Praise.objects.all().order_by('-date_added') \
-        .select_related('praise_nominator', 'recipient',
-                        'praise_nominator__person', 'recipient__user')
+    thanks_list = Praise.objects.all().order_by('-date_added'). \
+        select_related('praise_nominator', 'recipient',
+                       'praise_nominator__person', 'recipient__user')
     items_per_page = getattr(settings, 'STAFF_THANKS_PAGINATION_LIMIT', 10)
     paginator = Paginator(thanks_list, items_per_page)
     page_num = req.GET.get('page_num')
@@ -357,8 +362,9 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
         selected_tag_pks = Tag.objects.filter(
             slug__in=tag_slugs_list).values_list('pk', flat=True)
 
-        people = Person.objects.filter(user__is_active=True) \
-            .order_by('user__last_name')
+        people = Person.objects.filter(user__is_active=True). \
+            select_related('user'). \
+            order_by('user__last_name')
 
         for pk in selected_tag_pks:
             people = people.filter(tags__pk=pk).distinct()
