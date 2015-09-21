@@ -40,6 +40,9 @@
                 on {{ p.date_added }}
             </div>
         </div>
+        {% if not forloop.last %}
+        <hr>
+        {% endif %}
     {% endfor %}
 
     <div class="pagination">

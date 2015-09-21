@@ -305,7 +305,8 @@ def show_thanks(req):
     thanks_list = Praise.objects.all().order_by('-date_added') \
         .select_related('praise_nominator', 'recipient',
                         'praise_nominator__person', 'recipient__user')
-    paginator = Paginator(thanks_list, 10)
+    items_per_page = getattr(settings, 'STAFF_THANKS_PAGINATION_LIMIT', 10)
+    paginator = Paginator(thanks_list, items_per_page)
     page_num = req.GET.get('page_num')
 
     try:
