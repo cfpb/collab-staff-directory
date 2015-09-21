@@ -314,17 +314,23 @@ def show_thanks(req):
     paginator = Paginator(thanks_list, items_per_page)
     page_num = req.GET.get('page_num')
 
+    # Parse the page number, if any.  Copied from this guide:
+    # https://docs.djangoproject.com/en/1.6/topics/pagination/
     try:
         page = paginator.page(page_num)
     except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
         page = paginator.page(1)
     except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
         page = paginator.page(paginator.num_pages)
 
     total_pages = page.paginator.num_pages
     mypage = page.number
     bottom_limit = 15
-    # center range around the current page count
+    # flex_range is an array of 15 (or less) numbers centered around the
+    # current page.  For example, if there are 100 pages and the current
+    # page is 35, the range will be [28 ... 42]
     if mypage <= bottom_limit/2:
         flex_range = range(1, min(bottom_limit, total_pages)+1)
     elif mypage > (total_pages - bottom_limit/2):
