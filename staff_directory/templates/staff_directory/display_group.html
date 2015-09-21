@@ -17,7 +17,7 @@
             {% cache 600 display_group_profiles tags_key title %}
                 <div class="profile_images">
                 {% for person in people %}
-                    <a href="{% url "staff_directory:person" stub=person.user.person.stub %}">
+                    <a href="{% url "staff_directory:person" stub=person.stub %}">
                         <img src="{{ person.photo_file.url_125x125 }}" alt="">
                         {{ person.user.first_name }} {{ person.user.last_name }}
                     </a>

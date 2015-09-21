@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.context_processors import csrf
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.views.decorators.cache import cache_page
@@ -49,7 +50,9 @@ def _add_person_data(req, p, person):
         _query_profile_current_projects_tags(req, person)
     p['other_tags'] = _query_profile_other_tags(req, person)
     p['thanks'] = Praise.objects.filter(recipient=person). \
-        order_by('-date_added')
+        order_by('-date_added'). \
+        select_related('praise_nominator',
+                       'praise_nominator__person')
 
 
 def _query_profile_what_i_do_tags(req, person):
@@ -90,6 +93,7 @@ def index(req, format='html'):
     p = _create_params(req)
     p['recent_photos'] = Person.objects.filter(
         ~Q(photo_file="avatars/default.jpg")).filter(user__is_active=True). \
+        select_related('user', 'user__person'). \
         order_by('-updated_at')[:20]
     p['divisions'] = OrgGroup.objects.filter(parent=None).order_by('title')
     p['offices'] = OrgGroup.objects.exclude(parent=None).order_by(
@@ -253,6 +257,8 @@ def org_group(req, title, tag_slugs=''):
         people = org_group.person_set.filter(user__is_active=True). \
             order_by('user__last_name', 'user__first_name')
 
+    people = people.select_related('user')
+
     if tag_slugs != '':
         tag_slugs_list = [t for t in tag_slugs.split('/')]
         selected_tags = Tag.objects.filter(slug__in=tag_slugs_list)
@@ -301,9 +307,39 @@ def thanks(req, stub):
 @login_required
 def show_thanks(req):
     p = _create_params(req)
-    p['thanks_list'] = Praise.objects.all().order_by('-date_added') \
-        .select_related('praise_nominator', 'recipient',
-                        'praise_nominator__person', 'recipient__user')
+    thanks_list = Praise.objects.all().order_by('-date_added'). \
+        select_related('praise_nominator', 'recipient',
+                       'praise_nominator__person', 'recipient__user')
+    items_per_page = getattr(settings, 'STAFF_THANKS_PAGINATION_LIMIT', 10)
+    paginator = Paginator(thanks_list, items_per_page)
+    page_num = req.GET.get('page_num')
+
+    # Parse the page number, if any.  Copied from this guide:
+    # https://docs.djangoproject.com/en/1.6/topics/pagination/
+    try:
+        page = paginator.page(page_num)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        page = paginator.page(paginator.num_pages)
+
+    total_pages = page.paginator.num_pages
+    mypage = page.number
+    bottom_limit = 15
+    # flex_range is an array of 15 (or less) numbers centered around the
+    # current page.  For example, if there are 100 pages and the current
+    # page is 35, the range will be [28 ... 42]
+    if mypage <= bottom_limit/2:
+        flex_range = range(1, min(bottom_limit, total_pages)+1)
+    elif mypage > (total_pages - bottom_limit/2):
+        flex_range = range(total_pages-bottom_limit, total_pages+1)
+    else:
+        flex_range = range(mypage - bottom_limit/2, mypage + bottom_limit/2 + 1)
+
+    p['thanks_list'] = page
+    p['flex_page_range'] = flex_range
     return render_to_response('staff_directory/show_thanks.html', p,
                               context_instance=RequestContext(req))
 
@@ -332,8 +368,9 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
         selected_tag_pks = Tag.objects.filter(
             slug__in=tag_slugs_list).values_list('pk', flat=True)
 
-        people = Person.objects.filter(user__is_active=True) \
-            .order_by('user__last_name')
+        people = Person.objects.filter(user__is_active=True). \
+            select_related('user'). \
+            order_by('user__last_name')
 
         for pk in selected_tag_pks:
             people = people.filter(tags__pk=pk).distinct()
