@@ -2,7 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q
-from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.http import (
+    Http404, HttpResponse, HttpResponseNotAllowed, HttpResponseRedirect
+)
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.core.context_processors import csrf
@@ -11,8 +13,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 from django.views.decorators.cache import cache_page
 from django.views.decorators.cache import never_cache
+from urllib import urlencode
 
-from cache_tools.tools import cache_page_in_group, expire_cache_group
+from cache_tools.tools import expire_cache_group
 
 from core.utils import json_response
 from core.taggit.utils import add_tags
@@ -435,3 +438,24 @@ def show_tag_emails(req, tag_slugs=''):
 
     emails_text = '; '.join(emails)
     return HttpResponse(emails_text)
+
+
+@login_required
+@never_cache
+def lookup(req):
+    if req.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    email = req.GET.get('email')
+
+    try:
+        person = Person.objects.get(user__email=email)
+    except Person.DoesNotExist:
+        raise Http404
+
+    url = reverse('staff_directory:person', args=(person.stub,))
+
+    params = dict(req.GET.items())
+    params.pop('email')
+
+    return HttpResponseRedirect(url + '?' + urlencode(params))

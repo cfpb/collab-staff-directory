@@ -179,3 +179,47 @@ class StaffThanksTest(Exam, TestCase):
         qs = urlencode({'draft_thanks': '<script>'})
         resp = self.client.get(self.url + '?' + qs)
         self.assert_open_thanks(resp, '&lt;script&gt;')
+
+
+class LookupTest(Exam, TestCase):
+    fixtures = ['core-test-fixtures']
+
+    @before
+    def login(self):
+        self.assertTrue(self.client.login(
+            username='test1@example.com',
+            password='1'
+        ))
+
+        self.url = reverse('staff_directory:lookup')
+        self.root = 'http://testserver'
+
+    def test_post_forbidden(self):
+        resp = self.client.post(self.url)
+        self.assertEqual(resp.status_code, 405)
+
+    def test_get_no_email(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 404)
+
+    def test_get_invalid_email(self):
+        resp = self.client.get(self.url + '?email=BAD')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_get_valid_email(self):
+        resp = self.client.get(self.url + '?email=test1.1@example.com')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(
+            resp['Location'],
+            self.root + reverse('staff_directory:person', args=('test1',))
+        )
+
+    def test_get_valid_email_with_qs(self):
+        qs = '?email=test1.1@example.com&foo=bar&bar=baz'
+        resp = self.client.get(self.url + qs)
+        url = reverse('staff_directory:person', args=('test1',))
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(
+            resp['Location'],
+            self.root + url + '?foo=bar&bar=baz'
+        )
