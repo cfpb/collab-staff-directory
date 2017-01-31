@@ -115,8 +115,7 @@
             <h4>Staff thanks</h4>
             {% if not user == person.user %}
                 <a href="#" class="right" id="add_staff_thanks"
-                    >{% if draft_thanks %}Cancel{% else %}+ Add{% endif %}<
-                /a>
+                >{% if draft_thanks %}Cancel{% else %}+ Add{% endif %}</a>
 
                 <div class="add_thanks" id="add_thanks"
                     {% if not draft_thanks %}style="display: none;"{% endif %}
