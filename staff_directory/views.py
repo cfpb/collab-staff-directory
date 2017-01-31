@@ -446,10 +446,10 @@ def lookup(req):
     if req.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    email = req.GET.get('email')
+    email = req.GET.get('email') or ''
 
     try:
-        person = Person.objects.get(user__email=email)
+        person = Person.objects.get(user__email__iexact=email)
     except Person.DoesNotExist:
         raise Http404
 

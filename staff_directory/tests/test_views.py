@@ -223,3 +223,11 @@ class LookupTest(Exam, TestCase):
             resp['Location'],
             self.root + url + '?foo=bar&bar=baz'
         )
+
+    def test_get_valid_email_case_insensitive(self):
+        resp = self.client.get(self.url + '?email=TEST1.1@example.com')
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(
+            resp['Location'],
+            self.root + reverse('staff_directory:person', args=('test1',))
+        )
