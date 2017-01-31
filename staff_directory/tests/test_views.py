@@ -2,15 +2,13 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.html import escape
+from urllib import urlencode
 
 from core.taggit.utils import add_tags
 from core.taggit.models import TagCategory
 from core.models import Person, OrgGroup
 from exam.cases import Exam
 from exam.decorators import before
-from core.notifications.email import EmailInfo
-from core.notifications.models import Notification
-from staff_directory.models import Praise
 
 
 class TagPageTests(Exam, TestCase):
@@ -139,3 +137,45 @@ class OrgGroupTest(Exam, TestCase):
             person_tagged.full_name), status_code=200)
         self.assertNotContains(resp, escape(
             person_not_tagged.full_name), status_code=200)
+
+
+class StaffThanksTest(Exam, TestCase):
+    fixtures = ['core-test-fixtures']
+
+    @before
+    def login(self):
+        self.assertTrue(self.client.login(
+            username='test1@example.com',
+            password='1'
+        ))
+
+        self.url = reverse('staff_directory:person', args=('test3',))
+
+    def assert_closed_thanks(self, response):
+        self.assertContains(response, '>+ Add<')
+
+    def assert_open_thanks(self, response, message):
+        self.assertContains(response, '>Cancel<')
+        self.assertContains(response, '>{}</textarea'.format(message))
+
+    def test_profile_page_empty_thanks(self):
+        resp = self.client.get(self.url + '?draft_thanks=')
+        self.assert_closed_thanks(resp)
+
+    def test_profile_page_thanks_message(self):
+        resp = self.client.get(self.url + '?draft_thanks=Thanks')
+        self.assert_open_thanks(resp, 'Thanks')
+
+    def test_profile_page_thanks_message_urlencode(self):
+        resp = self.client.get(self.url + '?draft_thanks=Thanks%21')
+        self.assert_open_thanks(resp, 'Thanks!')
+
+    def test_profile_page_thanks_message_unicode(self):
+        qs = urlencode({'draft_thanks': 'unicod\xc3\xab'})
+        resp = self.client.get(self.url + '?' + qs)
+        self.assert_open_thanks(resp, 'unicod\xc3\xab')
+
+    def test_profile_page_thanks_message_escape_html(self):
+        qs = urlencode({'draft_thanks': '<script>'})
+        resp = self.client.get(self.url + '?' + qs)
+        self.assert_open_thanks(resp, '&lt;script&gt;')

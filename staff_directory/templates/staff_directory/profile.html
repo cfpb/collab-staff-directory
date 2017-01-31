@@ -114,9 +114,13 @@
         <div class="span4" id="staff_thanks">
             <h4>Staff thanks</h4>
             {% if not user == person.user %}
-                <a href="#" class="right" id="add_staff_thanks">+ Add</a>
+                <a href="#" class="right" id="add_staff_thanks"
+                    >{% if draft_thanks %}Cancel{% else %}+ Add{% endif %}<
+                /a>
 
-                <div class="add_thanks" style="display: none;" id="add_thanks">
+                <div class="add_thanks" id="add_thanks"
+                    {% if not draft_thanks %}style="display: none;"{% endif %}
+                >
                     <form method="post" action="{% url "staff_directory:thanks" person.stub %}" id="thanks_form">
                         {% csrf_token %}
                         <label>Add staff thanks for
@@ -128,7 +132,7 @@
                         </label>
                         <hr>
                         <label>What would you like to thank {{ person.user.first_name }} for?</label>
-                        <textarea rows="8" name="reason"></textarea>
+                        <textarea rows="8" name="reason">{% if draft_thanks %}{{ draft_thanks|escape }}{% endif %}</textarea>
                         <input type="submit" value="Send Thanks" class="btn">
                     </form>
                 </div>

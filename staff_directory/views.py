@@ -115,19 +115,25 @@ def person_profile(req, stub):
     """
 
     user = get_object_or_404(get_user_model(), person__stub=stub)
-    p = _create_params(req)
-    if user.is_active:
-        person = user.get_profile()
-        person.format_phone_numbers()
 
-        _add_person_data(req, p, person)
-
-        p['tagging_allowed'] = (person.allow_tagging) or (user == req.user)
-
-        return render_to_response(TEMPLATE_PATH + 'profile.html', p,
-                                  context_instance=RequestContext(req))
-    else:
+    if not user.is_active:
         raise Http404
+
+    p = _create_params(req)
+
+    person = user.get_profile()
+    person.format_phone_numbers()
+
+    _add_person_data(req, p, person)
+
+    p['tagging_allowed'] = (person.allow_tagging) or (user == req.user)
+    p['draft_thanks'] = req.GET.get('draft_thanks') or None
+
+    return render_to_response(
+        TEMPLATE_PATH + 'profile.html',
+        p,
+        context_instance=RequestContext(req)
+    )
 
 
 @csrf_protect
