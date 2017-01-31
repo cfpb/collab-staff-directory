@@ -156,7 +156,7 @@ class StaffThanksTest(Exam, TestCase):
 
     def assert_open_thanks(self, response, message):
         self.assertContains(response, '>Cancel<')
-        self.assertContains(response, '>{}</textarea'.format(message))
+        self.assertContains(response, '>{0}</textarea'.format(message))
 
     def test_profile_page_empty_thanks(self):
         resp = self.client.get(self.url + '?draft_thanks=')
