@@ -27,21 +27,27 @@
             <a href="mailto:{{ person.user.email }}">{{ person.user.email }}</a>
           </li>
           <li class="info_phone">
-            <span>Phone</span>
-            {% if person.office_phone_formatted %}
-                {{ person.office_phone_formatted }}
-            {% else %}
-                Unlisted
-            {% endif %}
+              <span>Phone</span>
+          {% if person.office_phone_formatted %}
+              {{ person.office_phone_formatted }}
+          {% else %}
+              Unlisted
+          {% endif %}
           </li>
           <li class="info_mobile">
-            <span>Mobile</span>
-            {% if person.mobile_phone_formatted %}
-                {{ person.mobile_phone_formatted }}
-            {% else %}
-            Unlisted
-            {% endif %}
+              <span>Mobile</span>
+          {% if person.mobile_phone_formatted %}
+              {{ person.mobile_phone_formatted }}
+          {% else %}
+              Unlisted
+          {% endif %}
           </li>
+      {% if person.home_phone_formatted %}
+          <li class="info_phone">
+              <span>Alt</span>
+              {{ person.home_phone_formatted }}
+          </li>
+      {% endif %}
       </ul>
       <ul>
         {% if person.org_group.parent %}
