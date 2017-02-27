@@ -22,26 +22,24 @@
 
   <div class="list">
       <ul>
+      {% if person.user.email %}
           <li class="info_email">
-            <span>Email</span>
-            <a href="mailto:{{ person.user.email }}">{{ person.user.email }}</a>
+              <span>Email</span>
+              <a href="mailto:{{ person.user.email }}">{{ person.user.email }}</a>
           </li>
+      {% endif %}
+      {% if person.office_phone_formatted %}
           <li class="info_phone">
               <span>Phone</span>
-          {% if person.office_phone_formatted %}
               {{ person.office_phone_formatted }}
-          {% else %}
-              Unlisted
-          {% endif %}
           </li>
+      {% endif %}
+      {% if person.mobile_phone_formatted %}
           <li class="info_mobile">
               <span>Mobile</span>
-          {% if person.mobile_phone_formatted %}
               {{ person.mobile_phone_formatted }}
-          {% else %}
-              Unlisted
-          {% endif %}
           </li>
+      {% endif %}
       {% if person.home_phone_formatted %}
           <li class="info_phone">
               <span>Alt</span>
