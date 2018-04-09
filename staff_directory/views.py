@@ -24,12 +24,13 @@ from core.models import Person, OrgGroup
 from core.notifications.models import Notification
 from core.notifications.email import EmailInfo
 from core.taggit.models import Tag, TaggedItem
-from staff_directory.helpers import _get_emails_for_tag, \
-    _set_remove_tag_permission, _query_profile_tags, \
-    _set_taggers, _query_tags_for_people, STAFF_DIR_TAG_CATEGORIES
+from staff_directory.helpers import _apply_profile_filters, \
+    _get_emails_for_tag, _query_profile_tags, _query_tags_for_people, \
+    _set_remove_tag_permission, _set_taggers, STAFF_DIR_TAG_CATEGORIES
 
 from decorators import registration_required, user_allows_tagging
 from models import Praise
+
 
 
 TEMPLATE_PATH = 'staff_directory/'
@@ -94,10 +95,9 @@ def index(req, format='html'):
     if not user_has_profile(req.user):
         return HttpResponseRedirect(reverse('core:register'))
     p = _create_params(req)
-    p['recent_photos'] = Person.objects.filter(
-        ~Q(photo_file="avatars/default.jpg")).filter(user__is_active=True). \
-        select_related('user', 'user__person'). \
-        order_by('-updated_at')[:20]
+    people = _apply_profile_filters(Person.objects)
+    p['recent_photos'] = people.filter(
+        ~Q(photo_file="avatars/default.jpg")).order_by('-updated_at')[:20]
     p['divisions'] = OrgGroup.objects.filter(parent=None).order_by('title')
     p['offices'] = OrgGroup.objects.exclude(parent=None).order_by(
         'parent__title', 'title')
@@ -119,12 +119,13 @@ def person_profile(req, stub):
 
     user = get_object_or_404(get_user_model(), person__stub=stub)
 
-    if not user.is_active:
-        raise Http404
-
     p = _create_params(req)
 
     person = user.get_profile()
+
+    if not user.is_active or person.hide_profile:
+        raise Http404
+
     person.format_phone_numbers()
 
     _add_person_data(req, p, person)
@@ -258,15 +259,11 @@ def org_group(req, title, tag_slugs=''):
 
     org_group = org_groups[0]
     if not org_group.parent:
-        people = Person.objects.filter(user__is_active=True) \
-            .order_by('user__last_name') \
-            .filter(Q(org_group=org_group) |
+        people = _apply_profile_filters(Person.objects)
+        people = people.filter(Q(org_group=org_group) |
                     Q(org_group__parent=org_group))
     else:
-        people = org_group.person_set.filter(user__is_active=True). \
-            order_by('user__last_name', 'user__first_name')
-
-    people = people.select_related('user')
+        people = _apply_profile_filters(org_group.person_set)
 
     if tag_slugs != '':
         tag_slugs_list = [t for t in tag_slugs.split('/')]
@@ -377,9 +374,7 @@ def show_by_tag(req, tag_slugs='', new_tag_slug=''):
         selected_tag_pks = Tag.objects.filter(
             slug__in=tag_slugs_list).values_list('pk', flat=True)
 
-        people = Person.objects.filter(user__is_active=True). \
-            select_related('user'). \
-            order_by('user__last_name')
+        people = _apply_profile_filters(Person.objects)
 
         for pk in selected_tag_pks:
             people = people.filter(tags__pk=pk).distinct()

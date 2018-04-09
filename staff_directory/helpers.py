@@ -7,6 +7,11 @@ STAFF_DIR_TAG_CATEGORIES = ['staff-directory-my-expertise',
                             'staff-directory-my-projects',
                             'staff-directory-other-things']
 
+def _apply_profile_filters(queryset):
+    return queryset.filter(user__is_active=True) \
+    .filter(hide_profile=False) \
+    .order_by('user__last_name', 'user__first_name') \
+    .select_related('user')
 
 def _set_remove_tag_permission(req, person, tags):
     user = person.user
